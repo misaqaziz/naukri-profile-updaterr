@@ -30,7 +30,6 @@ jobs:
         run: |
           wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
           sudo apt install -y ./google-chrome-stable_current_amd64.deb
-          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
           LATEST=$(curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
           wget -O chromedriver.zip "https://chromedriver.storage.googleapis.com/${LATEST}/chromedriver_linux64.zip"
           unzip chromedriver.zip
@@ -42,7 +41,7 @@ jobs:
           NAUKRI_EMAIL: ${{ secrets.NAUKRI_EMAIL }}
           NAUKRI_PASS: ${{ secrets.NAUKRI_PASS }}
         run: |
-          python - <<EOF
+          python3 - << 'EOF'
 import os
 import time
 from selenium import webdriver
