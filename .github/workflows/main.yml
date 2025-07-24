@@ -2,12 +2,13 @@ name: Auto Update Naukri Profile
 
 on:
   schedule:
-    - cron: '0 3 * * *'  # Runs every day at 8:30 AM IST
+    - cron: '30 3 * * *'   # Runs every day at 9:00 AM IST (03:30 UTC)
+    - cron: '0 4 * * *'    # Runs every day at 10:00 AM IST (04:30 UTC)
   workflow_dispatch:
 
 jobs:
   update-naukri:
-    runs-on: ubuntu-22.04  # ✅ Use stable version with all required packages
+    runs-on: ubuntu-22.04  # ✅ stable and compatible version
 
     steps:
       - name: Checkout code
