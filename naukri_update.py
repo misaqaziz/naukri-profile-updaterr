@@ -1,9 +1,12 @@
+import os
+import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-import time
 
-# Set up Chrome headless
+email = os.environ.get("NAUKRI_EMAIL")
+password = os.environ.get("NAUKRI_PASS")
+
 chrome_options = Options()
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--no-sandbox")
@@ -12,29 +15,22 @@ chrome_options.add_argument("--disable-dev-shm-usage")
 driver = webdriver.Chrome(options=chrome_options)
 
 try:
-    # Open Naukri login page
     driver.get("https://www.naukri.com/nlogin/login")
-
-    # Login
-    driver.find_element(By.ID, "usernameField").send_keys("your-email@example.com")
-    driver.find_element(By.ID, "passwordField").send_keys("your-password")
+    time.sleep(3)
+    driver.find_element(By.ID, "usernameField").send_keys(email)
+    driver.find_element(By.ID, "passwordField").send_keys(password)
     driver.find_element(By.XPATH, "//button[@type='submit']").click()
 
-    time.sleep(5)  # wait for login to complete
-
-    # Navigate to profile
+    time.sleep(5)
     driver.get("https://www.naukri.com/mnjuser/profile")
-
     time.sleep(5)
 
-    # Simulate update — click "Edit" on summary or something similar
-    # For example: update resume headline or save button
     try:
         save_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Save')]")
         save_button.click()
-        print("Profile updated successfully!")
+        print("✅ Profile updated successfully.")
     except:
-        print("Could not locate update button, but login likely worked.")
+        print("⚠️ Save button not found, login may have worked though.")
 
 finally:
     driver.quit()
