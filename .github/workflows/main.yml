@@ -7,7 +7,7 @@ on:
 
 jobs:
   update-naukri:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04  # ✅ Use stable version with all required packages
 
     steps:
       - name: Checkout code
@@ -21,12 +21,19 @@ jobs:
       - name: Install Chrome & ChromeDriver
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget unzip xvfb libxi6 libgconf-2-4
-          sudo apt-get install -y google-chrome-stable || (wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && sudo apt install -y ./google-chrome*.deb)
-          LATEST=$(wget -q -O - https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
-          wget https://chromedriver.storage.googleapis.com/${LATEST}/chromedriver_linux64.zip
-          unzip chromedriver_linux64.zip
-          sudo mv chromedriver /usr/local/bin/
+          sudo apt-get install -y wget unzip jq fonts-liberation libu2f-udev libvulkan1 libxss1 \
+            libnss3 libatk-bridge2.0-0 libgtk-3-0 libasound2 libx11-xcb1 libxcomposite1 libxdamage1 libxrandr2
+
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo apt install -y ./google-chrome-stable_current_amd64.deb
+
+          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+\.\d+')
+          DRIVER_URL=$(curl -sS https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json \
+            | jq -r --arg ver "$CHROME_VERSION" '.channels.Stable.downloads.chromedriver[] | select(.platform == "linux64") | .url')
+
+          wget -O chromedriver.zip "$DRIVER_URL"
+          unzip chromedriver.zip
+          sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
           sudo chmod +x /usr/local/bin/chromedriver
 
       - name: Install Python dependencies
