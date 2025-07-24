@@ -5,6 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 import time
 import os
+import traceback
 
 print("🔁 Opening Naukri login page...")
 
@@ -46,6 +47,7 @@ try:
 
 except Exception as e:
     print(f"❌ An error occurred: {e}")
+    traceback.print_exc()
 
 finally:
     print("🔚 Closing browser...")
