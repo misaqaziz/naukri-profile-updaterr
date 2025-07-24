@@ -1,46 +1,40 @@
-# naukri_update.py
-
 from selenium import webdriver
-from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-import os
+from selenium.webdriver.common.by import By
 import time
 
-# Read credentials from environment variables
-EMAIL = os.environ["NAUKRI_EMAIL"]
-PASSWORD = os.environ["NAUKRI_PASSWORD"]
+# Set up Chrome headless
+chrome_options = Options()
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")
 
-# Setup headless Chrome (invisible browser)
-options = Options()
-options.add_argument("--headless")
-options.add_argument("--no-sandbox")
-options.add_argument("--disable-dev-shm-usage")
+driver = webdriver.Chrome(options=chrome_options)
 
-# Start Chrome
-driver = webdriver.Chrome(options=options)
+try:
+    # Open Naukri login page
+    driver.get("https://www.naukri.com/nlogin/login")
 
-def update_profile():
+    # Login
+    driver.find_element(By.ID, "usernameField").send_keys("your-email@example.com")
+    driver.find_element(By.ID, "passwordField").send_keys("your-password")
+    driver.find_element(By.XPATH, "//button[@type='submit']").click()
+
+    time.sleep(5)  # wait for login to complete
+
+    # Navigate to profile
+    driver.get("https://www.naukri.com/mnjuser/profile")
+
+    time.sleep(5)
+
+    # Simulate update — click "Edit" on summary or something similar
+    # For example: update resume headline or save button
     try:
-        print("Opening Naukri...")
-        driver.get("https://www.naukri.com/mnjuser/profile")
-        time.sleep(5)
+        save_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Save')]")
+        save_button.click()
+        print("Profile updated successfully!")
+    except:
+        print("Could not locate update button, but login likely worked.")
 
-        print("Logging in...")
-        driver.find_element(By.ID, "usernameField").send_keys(EMAIL)
-        driver.find_element(By.ID, "passwordField").send_keys(PASSWORD)
-        driver.find_element(By.XPATH, "//button[contains(text(),'Login')]").click()
-        time.sleep(7)
-
-        print("Trying to simulate profile update...")
-        driver.find_element(By.XPATH, "//span[contains(text(),'Edit')]").click()
-        time.sleep(3)
-        driver.find_element(By.XPATH, "//button[contains(text(),'Save')]").click()
-
-        print("✅ Profile updated successfully!")
-
-    except Exception as e:
-        print("❌ Error during update:", e)
-    finally:
-        driver.quit()
-
-update_profile()
+finally:
+    driver.quit()
