@@ -1,1 +1,1 @@
-# naukri-profile-updaterr
+# naukri-profile-updater
