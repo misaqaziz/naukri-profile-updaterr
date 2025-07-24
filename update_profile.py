@@ -20,27 +20,27 @@ driver = webdriver.Chrome(options=options)
 wait = WebDriverWait(driver, 15)
 
 try:
-    driver.get("https://www.naukri.com/mnjuser/profile")
+    driver.get("https://www.naukri.com/nlogin/login")
 
     print("🔐 Entering login credentials...")
 
-    # Wait for the login form to load and enter email
-    email_input = wait.until(EC.presence_of_element_located((By.ID, "usernameField")))
+    # Wait and input credentials
+    email_input = wait.until(EC.presence_of_element_located((By.NAME, "email")))
     email_input.send_keys(os.environ['NAUKRI_EMAIL'])
 
-    # Enter password
-    password_input = wait.until(EC.presence_of_element_located((By.ID, "passwordField")))
+    password_input = wait.until(EC.presence_of_element_located((By.NAME, "PASSWORD")))
     password_input.send_keys(os.environ['NAUKRI_PASS'])
 
-    # Click login
-    login_button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "w60")))
+    login_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//button[@type="submit"]')))
     login_button.click()
 
     print("✅ Login submitted... waiting for profile to load.")
 
-    # Wait for profile page or "Update" button to appear
+    # Wait for profile update button
+    wait.until(EC.url_contains("profile"))  # wait until redirected
+    time.sleep(3)  # wait extra to be safe
+
     update_button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "update-text")))
-    time.sleep(2)  # optional buffer
     update_button.click()
 
     print("📤 Profile updated!")
